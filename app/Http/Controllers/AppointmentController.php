@@ -9,6 +9,7 @@ use App\Models\Service;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
@@ -21,22 +22,26 @@ class AppointmentController extends Controller
         foreach($period as $item){
             array_push($slots,$item->format("h:i A"));
         }
-        return view('appointments.booking', compact('barbers', 'services','slots'));
+        return view('frontend.index', compact('barbers', 'services','slots'));
     }
 
     public function bookAppointment(Request $request)
     {
+        //dd($request);
 
-        $request->validate([
-            'customer_first_name' => 'required|string|max:255',
-            'customer_last_name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'datepicker' => 'required|date_format:Y-m-d',
-            'selectService' => 'required|exists:services,id',
-            'selectTimeSlot' => 'required', // Add validation for time slot as needed
-            'barber' => 'required|exists:barbers,id',
-        ]);
+        // TODO:: validation is not working so commented for now
+//        $valid = $request->validate([
+//            'customer_first_name' => 'required|string|max:255',
+//            'customer_last_name' => 'required|string|max:255',
+//            'mobile' => 'required|string|max:255',
+//            'email' => 'required|email|max:255',
+//            'datepicker' => 'required|date_format:Y-m-d',
+//            'service' => 'required|exists:services,id',
+////            'timeSlot' => 'required', // Add validation for time slot as needed
+////            'barber' => 'required|exists:barbers,id',
+//        ]);
+
+        DB::beginTransaction();
 
         $customer = Customer::create([
             'first_name' => $request->input('customer_first_name'),
@@ -45,18 +50,21 @@ class AppointmentController extends Controller
             'email' => $request->input('email'),
         ]);
 
-        $appointment = new Appointment([
-            'start_time' => $request->input('selectTimeSlot'), // Adjust this based on your time slot handling logic
-            'end_time' => Carbon::parse($request->input('selectTimeSlot'))->addMinutes(30), // Assuming 30-minute duration
-            'store_selection' => 'Rockdale', // You can adjust this based on your logic
+        $appointment = $customer->appointments()->create([
+            'date' => $request->input('datepicker'), // Adjust this based on your time slot handling logic
+            'time' => Carbon::now()->format('H:i'), //TODO:: currently we are saving current time, we need to change this based on ui selection value
+            'branch' => 'Rockdale', //TODO:: this will be dynamic from the db
+            'barber_id' => $request->barber, //TODO:: We will get the barber id dynamically once we seed the Barber into db
         ]);
 
-        $barber = Barber::find($request->input('barber'));
-        $barber->appointments()->save($appointment);
+        DB::commit();
 
-        $service = Service::find($request->input('selectService'));
-        $appointment->serviceTypes()->attach($service);
+        //$barber = Barber::find($request->input('barber'));
+        //$barber->appointments()->save($appointment);
 
-        return redirect()->route('appointments.showBookingForm')->with('success', 'Appointment booked successfully!');
+        //$service = Service::find($request->input('selectService'));
+        //$appointment->serviceTypes()->attach($service);
+
+        return redirect()->route('index')->with('success', 'Appointment Booked successfully!');
     }
 }

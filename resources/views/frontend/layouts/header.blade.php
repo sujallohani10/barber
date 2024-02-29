@@ -32,7 +32,10 @@
                                 </nav>
                             </div>
                             <div class="header-right-btn f-right d-none d-lg-block ml-30">
-                                <a href="from.html" class="btn header-btn">became a member</a>
+                                <button type="button" class="btn header-btn" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                                  Book an Appointment
+                                </button>
+{{--                                <a href="#bookingModal" class="btn header-btn">Book an Appointment</a>--}}
                             </div>
                         </div>
                     </div>

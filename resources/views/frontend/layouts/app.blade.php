@@ -91,5 +91,33 @@
         'resources/assets/js/frontend/core/plugins.js',
         'resources/assets/js/frontend/core/main.js'
     ])
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const datePicker = flatpickr("#date", {
+                minDate: "today",
+                maxDate: new Date().fp_incr(14),
+                dateFormat: "Y-m-d",
+                onChange: function (selectedDates, dateStr, instance) {
+                    const timeSlotContainer = document.getElementById('timeslot');
+                    console.log(timeSlotContainer,'timeslot');
+                    if (selectedDates.length > 0) {
+                        timeSlotContainer.classList.remove('d-none');
+                    }
+                },
+            });
+
+            const timeSlotButtons = document.querySelectorAll('.list-group-item');
+            timeSlotButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    timeSlotButtons.forEach(function(btn) {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    document.getElementById('selectedTimeSlot').value = this.getAttribute('data-time');
+                });
+            });
+        });
+    </script>
 </body>
 </html>

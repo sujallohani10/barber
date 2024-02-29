@@ -1,6 +1,12 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+    @if (session()->get('success'))
+        <div class="alert alert-success" role="alert">
+            {!! session()->get('success') !!}
+        </div>
+    @endif
+
     <!--? slider Area Start-->
     <div class="slider-area position-relative fix">
         <div class="slider-active">
@@ -372,4 +378,7 @@
         </div>
     </section>
     <!-- Blog Area End -->
+
+    {{--Partial blade for appointment modal--}}
+    @include('appointments.booking')
 @endsection
