@@ -1,4 +1,7 @@
 import 'bootstrap';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css'; // Ensure to import the flatpickr styles
+
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
