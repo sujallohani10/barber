@@ -17,7 +17,7 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="bookingModalLabel">Book an Appointment</h5>
+                                        <h5 class="modal-title" id="bookingModalLabel">Appointment Details</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -26,46 +26,73 @@
                                             @csrf
                                             <div class="mb-3">
                                                 <label for="selectService" class="form-label">Select Service</label>
-                                                <!-- Add your service selection dropdown here -->
-                                                <select class="form-select" id="selectService">
-                                                    <!-- Options for services -->
+                                                <select class="form-select" id="selectService" name="service">
+                                                    <option value="1">Hair Cut - $30</option>
+                                                    <option value="2">Shave - $20</option>
+                                                    <option value="3">Haircut and Shave Combo - $45</option>
                                                 </select>
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="selectService" class="form-label">Select Barber</label>
-                                                <!-- Add your service selection dropdown here -->
-                                                <select class="form-select" id="selectService">
-                                                    <!-- Options for services -->
+                                                <label for="selectBarber" class="form-label">Select Barber</label>
+                                                <select class="form-select" id="selectBarber">
+                                                    <option value="0">Any</option> <!-- Any option -->
+                                                    <option value="1">Tom</option>
+                                                    <option value="2">Matt</option>
+                                                    <option value="3">Harry</option>
                                                 </select>
                                             </div>
+
                                             <div class="mb-3">
-                                                <label for="date" class="form-label">Select Date</label>
+                                                <label for="date" id="date" class="form-label">Select Date</label>
                                                 <input type="text" class="form-control" id="date" name="datepicker" placeholder="Select a date">
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="time" class="form-label">Select Time Slot</label>
-                                                <!-- Add your time slot selection dropdown or scrollable list here -->
-                                                <div id="calendar_slots" class="appointo-calendar-slots">
-                                                    <!-- Time slots will be dynamically generated here -->
+
+                                            <div class="mb-3 d-none" id="timeslot">
+                                                <label for="selectTimeSlot" id="selectTimeSlot" class="form-label">Select Time Slot</label>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="list-group">
+                                                            @foreach($slots as $index => $slot)
+                                                                @if($index % 2 == 0)
+                                                                    <button type="button" class="list-group-item list-group-item-action" data-time="{{ $slot }}">{{ $slot }}</button>
+                                                                @endif
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="list-group">
+                                                            @foreach($slots as $index => $slot)
+                                                                @if($index % 2 != 0)
+                                                                    <button type="button" class="list-group-item list-group-item-action" data-time="{{ $slot }}">{{ $slot }}</button>
+                                                                @endif
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
                                                 </div>
+                                                <input type="hidden" name="timeSlot" id="selectedTimeSlot">
                                             </div>
+
                                             <div class="mb-3">
-                                                <label for="first_name" class="form-label">First Name</label>
-                                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                                <label for="firstName" class="form-label">First Name</label>
+                                                <input type="text" class="form-control" id="firstName" name="customer_first_name" required>
                                             </div>
+
                                             <div class="mb-3">
-                                                <label for="last_name" class="form-label">Last Name</label>
-                                                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                                <label for="lastName" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" id="lastName" name="customer_last_name" required>
                                             </div>
+
                                             <div class="mb-3">
                                                 <label for="mobile" class="form-label">Mobile</label>
                                                 <input type="number" class="form-control" id="mobile" name="mobile" required>
                                             </div>
+
                                             <div class="mb-3">
                                                 <label for="email" class="form-label">E-mail</label>
                                                 <input type="email" class="form-control" id="email" name="email" required>
                                             </div>
+
                                             <button type="submit" class="btn btn-primary">Book Appointment</button>
                                         </form>
                                     </div>
@@ -83,52 +110,29 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Initialize flatpickr on the datepicker input
             const datePicker = flatpickr("#date", {
                 minDate: "today",
-                maxDate: new Date().fp_incr(14), // 14 days from now
+                maxDate: new Date().fp_incr(14),
                 dateFormat: "Y-m-d",
                 onChange: function (selectedDates, dateStr, instance) {
-                    // Handle date change event
-                    generateTimeSlots(selectedDates[0]);
+                    const timeSlotContainer = document.getElementById('timeslot');
+                    console.log(timeSlotContainer,'timeslot');
+                    if (selectedDates.length > 0) {
+                        timeSlotContainer.classList.remove('d-none');
+                    }
                 },
             });
 
-            // Function to generate time slots
-            function generateTimeSlots(selectedDate) {
-                const timeSlotsContainer = document.getElementById('calendar_slots');
-                timeSlotsContainer.innerHTML = ''; // Clear existing slots
-
-                // Define your time slot intervals
-                const timeSlotIntervals = [
-                    { start: '10:00 PM', end: '10:30 PM' },
-                    { start: '10:30 PM', end: '11:00 PM' },
-                    { start: '11:00 PM', end: '11:30 PM' },
-                    { start: '12:00 PM', end: '12:30 PM' },
-                    { start: '12:30 PM', end: '01:00 PM' },
-                    { start: '01:00 PM', end: '01:30 PM' },
-                    { start: '01:30 PM', end: '02:00 PM' },
-                    { start: '02:00 PM', end: '02:30 PM' },
-                    { start: '02:30 PM', end: '03:00 PM' },
-                    // Add more time slots as needed
-                ];
-
-                // Iterate over time slot intervals and create elements
-                timeSlotIntervals.forEach((interval, index) => {
-                    const timeSlotDiv = document.createElement('div');
-                    timeSlotDiv.className = 'appointo-time-div';
-                    timeSlotDiv.id = 'appointo-time-div-' + index;
-
-                    const slotContent = document.createElement('div');
-                    slotContent.style.width = '100%';
-                    slotContent.className = 'appointo-slot';
-                    slotContent.id = 'appointo-slot-' + index;
-                    slotContent.textContent = `${interval.start} - ${interval.end}`;
-
-                    timeSlotDiv.appendChild(slotContent);
-                    timeSlotsContainer.appendChild(timeSlotDiv);
+            const timeSlotButtons = document.querySelectorAll('.list-group-item');
+            timeSlotButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    timeSlotButtons.forEach(function(btn) {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    document.getElementById('selectedTimeSlot').value = this.getAttribute('data-time');
                 });
-            }
+            });
         });
     </script>
 @endsection

@@ -6,27 +6,27 @@ use App\Models\Appointment;
 use App\Models\Barber;
 use App\Models\Customer;
 use App\Models\Service;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 class AppointmentController extends Controller
 {
-    private function getAvailableTimeSlots()
-    {
-        // Implement your logic to get available time slots
-    }
-
-
     public function showBookingForm()
     {
         $barbers = Barber::all();
         $services = Service::all();
-
-        return view('appointments.booking', compact('barbers', 'services'));
+        $period = new CarbonPeriod('10:00', '30 minutes', '20:00'); // for create use 24 hours format later change format
+        $slots = [];
+        foreach($period as $item){
+            array_push($slots,$item->format("h:i A"));
+        }
+        return view('appointments.booking', compact('barbers', 'services','slots'));
     }
 
     public function bookAppointment(Request $request)
     {
+
         $request->validate([
             'customer_first_name' => 'required|string|max:255',
             'customer_last_name' => 'required|string|max:255',
