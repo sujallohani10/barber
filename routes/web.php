@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +18,15 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+/* Backend routes */
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// TODO add prefix admin to all admin routes
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/admin/services', function () {
+    return "<h1>Services Page</h1>";
+})->name('admin.services');
 
+
+/* Frontend routes */
 Route::get('/', [AppointmentController::class, 'showBookingForm'])->name('index');
 Route::post('/appointments/book', [AppointmentController::class, 'bookAppointment'])->name('appointments.bookAppointment');
