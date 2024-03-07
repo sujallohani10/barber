@@ -20,12 +20,12 @@ Auth::routes();
 
 /* Backend routes */
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-// TODO add prefix admin to all admin routes
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-Route::get('/admin/services', function () {
-    return "<h1>Services Page</h1>";
-})->name('admin.services');
-
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/services', function () {
+        return "<h1>Services Page</h1>";
+    })->name('admin.services');
+});
 
 /* Frontend routes */
 Route::get('/', [AppointmentController::class, 'showBookingForm'])->name('index');
