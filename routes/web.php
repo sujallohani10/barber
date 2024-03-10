@@ -19,12 +19,13 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+// TODO: Add logout button in the dashboard page to logout from admin backend
 /* Backend routes */
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-// TODO add prefix admin to all admin routes
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-Route::get('/admin/services', [ServiceController::class, 'index'])->name('admin.services');
+Route::prefix('admin')->name('admin.')->group(function() {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('/services', ServiceController::class);
+});
 
 
 /* Frontend routes */

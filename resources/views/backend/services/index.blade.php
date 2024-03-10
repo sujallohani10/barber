@@ -21,10 +21,16 @@
 
     <section class="content">
         <div class="container-fluid">
+            @if (session()->get('success'))
+                <div class="alert alert-success" role="alert">
+                    {!! session()->get('success') !!}
+                </div>
+            @endif
+
             <div class="card">
-{{--                <div class="card-header">--}}
-{{--                    <h3 class="card-title">Striped Full Width Table</h3>--}}
-{{--                </div>--}}
+                <div class="card-header">
+                    <a href="{{ route('admin.services.create') }}" class="btn btn-primary float-right">Create Service</a>
+                </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0">
                     <table class="table table-striped">
@@ -32,51 +38,19 @@
                         <tr>
                             <th style="width: 5%">#</th>
                             <th>Service</th>
-                            <th>Description</th>
                             <th style="width: 20%">Price</th>
+                            <th>Description</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>1.</td>
-                            <td>Hair Cut</td>
-                            <td>
-                                <div class="progress progress-xs">
-                                    <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-danger">$30</span></td>
-                        </tr>
-                        <tr>
-                            <td>2.</td>
-                            <td>Shave</td>
-                            <td>
-                                <div class="progress progress-xs">
-                                    <div class="progress-bar bg-warning" style="width: 70%"></div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-warning">$20</span></td>
-                        </tr>
-                        <tr>
-                            <td>3.</td>
-                            <td>Hair Cut Plus Shave Combo</td>
-                            <td>
-                                <div class="progress progress-xs progress-striped active">
-                                    <div class="progress-bar bg-primary" style="width: 30%"></div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-primary">$50</span></td>
-                        </tr>
-                        <tr>
-                            <td>4.</td>
-                            <td>Fix and squish bugs</td>
-                            <td>
-                                <div class="progress progress-xs progress-striped active">
-                                    <div class="progress-bar bg-success" style="width: 90%"></div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-success">90%</span></td>
-                        </tr>
+                            @foreach($services as $key => $service)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $service->name }}</td>
+                                    <td><span class="badge bg-success">${{ $service->price }}</span></td>
+                                    <td>{{ $service->description }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
