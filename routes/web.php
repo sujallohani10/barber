@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\AppointmentController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\ServiceController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -20,11 +21,10 @@ Auth::routes();
 
 /* Backend routes */
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 // TODO add prefix admin to all admin routes
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-Route::get('/admin/services', function () {
-    return "<h1>Services Page</h1>";
-})->name('admin.services');
+Route::get('/admin/services', [ServiceController::class, 'index'])->name('admin.services');
 
 
 /* Frontend routes */
